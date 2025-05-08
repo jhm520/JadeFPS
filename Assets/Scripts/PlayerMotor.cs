@@ -1,6 +1,9 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerMotor : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+
+public class PlayerMotor : NetworkBehaviour
 {
     private CharacterController _controller;
     private Vector3 _playerVelocity;
@@ -28,12 +31,18 @@ public class PlayerMotor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(IsOwner);
+            
+        if (!IsOwner) return; // Only the owning player can control this object
+        
         _isGrounded = _controller.isGrounded; // Check if the player is grounded
     }
 
     //receive the inputs from our input manager and apply them to the character controller
     public void ProcessMove(Vector2 input)
     {
+        if (!IsOwner) return;
+        
         Vector3 moveDirection = Vector3.zero;
         moveDirection.x = input.x;
         moveDirection.z = input.y;
@@ -52,6 +61,8 @@ public class PlayerMotor : MonoBehaviour
 
     public void Jump()
     {
+        if (!IsOwner) return;
+
         if (_isGrounded)
         {
             _playerVelocity.y = Mathf.Sqrt(jumpHeight  * -3.0f * gravity); // Jump with an initial velocity

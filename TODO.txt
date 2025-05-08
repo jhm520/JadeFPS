@@ -1,0 +1,1 @@
+TODO: Hosting and Client connection is working, but when the client connects, the host loses their own camera view
