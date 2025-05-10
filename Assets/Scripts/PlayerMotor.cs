@@ -15,6 +15,8 @@ public class PlayerMotor : NetworkBehaviour
     public float gravity = -9.8f; // Gravity applied to the player
     public float jumpHeight = 3.0f; // Height of the jump
     
+    private Vector2 _lastInput;
+    
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,8 +33,6 @@ public class PlayerMotor : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(IsOwner);
-            
         if (!IsOwner) return; // Only the owning player can control this object
         
         _isGrounded = _controller.isGrounded; // Check if the player is grounded
@@ -42,6 +42,13 @@ public class PlayerMotor : NetworkBehaviour
     public void ProcessMove(Vector2 input)
     {
         if (!IsOwner) return;
+
+        // if (!IsServer)
+        // {
+        //     SendMoveRequestServerRpc(input);
+        //     return;
+        // }
+        
         
         Vector3 moveDirection = Vector3.zero;
         moveDirection.x = input.x;
@@ -56,11 +63,23 @@ public class PlayerMotor : NetworkBehaviour
         }
         
         _controller.Move( _playerVelocity * Time.deltaTime);
-        Debug.Log(_playerVelocity.y);
+        Debug.Log(moveDirection.x);
+    }
+
+    [ServerRpc]
+    private void SendMoveRequestServerRpc(Vector2 input)
+    {
+        ProcessMove(input);
     }
 
     public void Jump()
     {
+        // if (!IsServer)
+        // {
+        //     TryJumpServerRpc();
+        //     return;
+        // }
+        
         if (!IsOwner) return;
 
         if (_isGrounded)
@@ -73,5 +92,11 @@ public class PlayerMotor : NetworkBehaviour
         {
             Debug.Log("Cannot jump, not grounded.");
         }
+    }
+
+    [ServerRpc]
+    private void TryJumpServerRpc()
+    {
+        Jump();
     }
 }
