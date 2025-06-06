@@ -35,28 +35,31 @@ public class CenteredRectangleUI : MonoBehaviour
         panelRT.pivot = new Vector2(0.5f, 0.5f);
         panelRT.anchoredPosition = Vector2.zero;
         
-        // ✅ Create green rectangle button in top quarter of panel
-        GameObject greenButtonGO = new GameObject("TopGreenButton");
-        greenButtonGO.transform.SetParent(panelGO.transform, false);
+        // ✅ Create a button in top quarter of panel
+        GameObject ButtonGO = new GameObject("TopGreenButton");
+        ButtonGO.transform.SetParent(panelGO.transform, false);
 
         
         // Add required components
-        Image greenImage = greenButtonGO.AddComponent<Image>();
-        greenImage.color = Color.green;
+        Image greenImage = ButtonGO.AddComponent<Image>();
+        //set the color of the image
+        greenImage.color = new Color(0.7f, 0.7f, 0.7f, 0.9f);
 
-        Button greenButton = greenButtonGO.AddComponent<Button>();
+        
+        //set the button's image to the image
+        Button greenButton = ButtonGO.AddComponent<Button>();
         greenButton.targetGraphic = greenImage;
 
         // Size and position (top quarter of the panel)
-        RectTransform greenRT = greenButtonGO.GetComponent<RectTransform>();
-        greenRT.anchorMin = new Vector2(0f, 0.75f);
-        greenRT.anchorMax = new Vector2(1f, 1f);
+        RectTransform greenRT = ButtonGO.GetComponent<RectTransform>();
+        greenRT.anchorMin = new Vector2(0.1f, 0.75f);
+        greenRT.anchorMax = new Vector2(0.9f, 0.9f);
         greenRT.offsetMin = Vector2.zero;
         greenRT.offsetMax = Vector2.zero;
 
         // ✅ Add centered text inside the button
         GameObject textGO = new GameObject("ButtonText");
-        textGO.transform.SetParent(greenButtonGO.transform, false);
+        textGO.transform.SetParent(ButtonGO.transform, false);
 
         Text buttonText = textGO.AddComponent<Text>();
         buttonText.text = "Main Menu Title";
@@ -74,70 +77,6 @@ public class CenteredRectangleUI : MonoBehaviour
         
         // ✅ Add a click listener
         greenButton.onClick.AddListener(() => Debug.Log("Top green button clicked!"));
-        
-        // // ✅ Add green rectangle inside the top quarter of the panel
-        // GameObject greenRectGO = new GameObject("TopGreenRectangle");
-        // greenRectGO.transform.SetParent(panelGO.transform, false);
-        // Image greenImage = greenRectGO.AddComponent<Image>();
-        // greenImage.color = Color.green;
-        //
-        // RectTransform greenRT = greenRectGO.GetComponent<RectTransform>();
-        // greenRT.anchorMin = new Vector2(0f, 0.75f); // Bottom-left of top quarter
-        // greenRT.anchorMax = new Vector2(1f, 1f);    // Top-right of top quarter
-        // greenRT.offsetMin = Vector2.zero;
-        // greenRT.offsetMax = Vector2.zero;
-        //
-        // // ✅ Add centered text inside the green rectangle
-        // GameObject textGO = new GameObject("TopText");
-        // textGO.transform.SetParent(greenRectGO.transform, false);
-        //
-        // Text topText = textGO.AddComponent<Text>();
-        // topText.text = "Main Menu Title";
-        // topText.alignment = TextAnchor.MiddleCenter;
-        // topText.color = Color.black;
-        // topText.fontSize = 24;
-        // Font NewFont = Resources.Load<Font>("Fonts/OpenSans-Medium");
-        // topText.font = NewFont;
-        //
-        // RectTransform textRT = topText.GetComponent<RectTransform>();
-        // textRT.anchorMin = Vector2.zero;
-        // textRT.anchorMax = Vector2.one;
-        // textRT.offsetMin = Vector2.zero;
-        // textRT.offsetMax = Vector2.zero;
-        
-        // // Add layout group for buttons
-        // VerticalLayoutGroup layout = panelGO.AddComponent<VerticalLayoutGroup>();
-        // layout.childAlignment = TextAnchor.MiddleCenter;
-        // layout.spacing = 20f;
-        // layout.childForceExpandHeight = false;
-        // layout.childForceExpandWidth = true;
-        //
-        // // Create a Button
-        // GameObject buttonGO = new GameObject("TestButton");
-        // buttonGO.transform.SetParent(panelGO.transform, false);
-        //
-        // Button button = buttonGO.AddComponent<Button>();
-        // Image buttonImage = buttonGO.AddComponent<Image>();
-        // buttonImage.color = new Color(0.25f, 0.6f, 0.9f); // Light blue
-        //
-        // // Create text for button
-        // GameObject textGO = new GameObject("Text");
-        // textGO.transform.SetParent(buttonGO.transform, false);
-        // Text buttonText = textGO.AddComponent<Text>();
-        // buttonText.text = "Click Me!";
-        // buttonText.alignment = TextAnchor.MiddleCenter;
-        // buttonText.color = Color.white;
-        //
-        // Font NewFont = Resources.Load<Font>("Fonts/OpenSans-Medium");
-        // buttonText.font = NewFont;
-        //
-        // // Stretch text inside the button
-        // RectTransform textRT = buttonText.GetComponent<RectTransform>();
-        // textRT.anchorMin = Vector2.zero;
-        // textRT.anchorMax = Vector2.one;
-        // textRT.offsetMin = Vector2.zero;
-        // textRT.offsetMax = Vector2.zero;
-        //
     }
     
     // Button Callbacks
