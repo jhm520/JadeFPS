@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class InputManager : MonoBehaviour
+public class NetworkInputManager : NetworkBehaviour
 {
     private PlayerInputActions _playerInputActions;
 
@@ -13,18 +14,28 @@ public class InputManager : MonoBehaviour
     
     public void Start()
     {
-        if (!GameInstanceManager.PlayerGameInstanceTagContainer.HasTagByName( "GameplayTag/JadeFPS/Game/PlaySolo"))
+        if (GameInstanceManager.PlayerGameInstanceTagContainer.HasTagByName( "GameplayTag/JadeFPS/Game/PlaySolo"))
         {
             // If the PlaySolo tag is present, disable this script
             enabled = false;
             return;
         }
-        
+    }
+    
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public override void OnNetworkSpawn()
+    {
         InitializeInput();
     }
 
     void InitializeInput()
     {
+        // Disable this script if not the owner
+        if (!IsOwner)
+        {
+            enabled = false;
+            return;
+        }
         
         enabled = true; // Enable the script if the player is the owner
         
@@ -39,12 +50,14 @@ public class InputManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!IsOwner) return; // Only the owning player can control this object
         _look.ProcessLook(_onFoot.Look.ReadValue<Vector2>());
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!IsOwner) return; // Only the owning player can control this object
         //tell the player motor to move using the value from our movement action
         _motor.ProcessMove(_onFoot.Movement.ReadValue<Vector2>());
     }
