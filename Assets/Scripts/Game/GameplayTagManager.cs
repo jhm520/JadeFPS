@@ -28,7 +28,9 @@ public class GameplayTagManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
         // Optionally, initialize with some default tags
-        GameplayTagManager.CreateGameplayTag("Game/PlaySolo");
+        GameplayTagManager.CreateGameplayTag("GameplayTag/JadeFPS/Game/PlaySolo");
+        GameplayTagManager.CreateGameplayTag("GameplayTag/JadeFPS/Game/HostServer");
+
     }
     
     public bool HasTag(GameplayTag tag)

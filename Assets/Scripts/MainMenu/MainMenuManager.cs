@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,9 @@ public class MainMenuManager : MonoBehaviour
             gameInstanceGO.AddComponent<GameInstanceManager>();
         }
         
+        GameInstanceManager.PlayerGameInstanceTagContainer.RemoveTagByName("GameplayTag/JadeFPS/Game/PlaySolo");
+        GameInstanceManager.PlayerGameInstanceTagContainer.RemoveTagByName("GameplayTag/JadeFPS/Game/HostServer");
+
         // Create Canvas
         GameObject canvasGO = new GameObject("MainMenuCanvas");
         Canvas canvas = canvasGO.AddComponent<Canvas>();
@@ -39,37 +43,45 @@ public class MainMenuManager : MonoBehaviour
         panelRT.sizeDelta = new Vector2(300, 350);
         panelRT.anchorMin = new Vector2(0.5f, 0.5f);
         panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRT.pivot = new Vector2(0.5f, 0.5f);
-            panelRT.anchoredPosition = Vector2.zero;
+        panelRT.pivot = new Vector2(0.5f, 0.5f);
+        panelRT.anchoredPosition = Vector2.zero;
+        
+        //create play solo button
             
-            // ✅ Create a button in top quarter of panel
-            GameObject ButtonGO = new GameObject("TopGreenButton");
-            ButtonGO.transform.SetParent(panelGO.transform, false);
+       CreatePlaySoloButton(panelGO);
+       CreateHostServerButton(panelGO);
+    }
 
-            
-            // Add required components
-        Image greenImage = ButtonGO.AddComponent<Image>();
+    void CreateMainMenuButton(GameObject panelGO, string ButtonText, Vector2 anchorMin, Vector2 anchorMax,
+        UnityAction buttonCallback)
+    {
+        // ✅ Create a button in top quarter of panel
+        GameObject PlaySoloButtonGO = new GameObject("PlaySoloButton");
+        PlaySoloButtonGO.transform.SetParent(panelGO.transform, false);
+        
+        // Add required components
+        Image PlaySoloImage = PlaySoloButtonGO.AddComponent<Image>();
         //set the color of the image
-        greenImage.color = new Color(0.7f, 0.7f, 0.7f, 0.9f);
+        PlaySoloImage.color = new Color(0.7f, 0.7f, 0.7f, 0.9f);
 
         
         //set the button's image to the image
-        Button greenButton = ButtonGO.AddComponent<Button>();
-        greenButton.targetGraphic = greenImage;
+        Button PlaySoloButton = PlaySoloButtonGO.AddComponent<Button>();
+        PlaySoloButton.targetGraphic = PlaySoloImage;
 
         // Size and position (top quarter of the panel)
-        RectTransform greenRT = ButtonGO.GetComponent<RectTransform>();
-        greenRT.anchorMin = new Vector2(0.1f, 0.75f);
-        greenRT.anchorMax = new Vector2(0.9f, 0.9f);
-        greenRT.offsetMin = Vector2.zero;
-        greenRT.offsetMax = Vector2.zero;
+        RectTransform PlaySoloRT = PlaySoloButtonGO.GetComponent<RectTransform>();
+        PlaySoloRT.anchorMin = anchorMin;
+        PlaySoloRT.anchorMax = anchorMax;
+        PlaySoloRT.offsetMin = Vector2.zero;
+        PlaySoloRT.offsetMax = Vector2.zero;
 
         // ✅ Add centered text inside the button
-        GameObject textGO = new GameObject("ButtonText");
-        textGO.transform.SetParent(ButtonGO.transform, false);
+        GameObject PlaySoloTextGO = new GameObject("ButtonText");
+        PlaySoloTextGO.transform.SetParent(PlaySoloButtonGO.transform, false);
 
-        Text buttonText = textGO.AddComponent<Text>();
-        buttonText.text = "Play Solo";
+        Text buttonText = PlaySoloTextGO.AddComponent<Text>();
+        buttonText.text = ButtonText;
         buttonText.alignment = TextAnchor.MiddleCenter;
         buttonText.color = Color.black;
         buttonText.fontSize = 24;
@@ -83,16 +95,31 @@ public class MainMenuManager : MonoBehaviour
         textRT.offsetMax = Vector2.zero;
         
         // ✅ Add a click listener
-        greenButton.onClick.AddListener(OnPlaySolo);
+        PlaySoloButton.onClick.AddListener(buttonCallback);
+    }
+
+    void CreatePlaySoloButton(GameObject panelGO)
+    {
+        CreateMainMenuButton(panelGO, "Play Solo", new Vector2(0.1f, 0.75f), new Vector2(0.9f, 0.9f), OnPlaySolo);
+    }
+    
+    void CreateHostServerButton(GameObject panelGO)
+    {
+        CreateMainMenuButton(panelGO, "Host Server", new Vector2(0.1f, 0.50f), new Vector2(0.9f, 0.65f), OnHostServer);
     }
     
     // Button Callbacks
     void OnPlaySolo()
     {
-        GameInstanceManager.PlayerGameInstanceTagContainer.AddTagByName("Game/PlaySolo");
+        GameInstanceManager.PlayerGameInstanceTagContainer.AddTagByName("GameplayTag/JadeFPS/Game/PlaySolo");
         SceneManager.LoadScene("PlayScene");
     }// Replace with your real scene
-    void OnHostServer() => Debug.Log("Host Server pressed");
+    
+    void OnHostServer()
+    {
+        GameInstanceManager.PlayerGameInstanceTagContainer.AddTagByName("GameplayTag/JadeFPS/Game/HostServer");
+        SceneManager.LoadScene("PlayScene");
+    }// Replace with your real scene
     void OnJoinServer() => Debug.Log("Join Server pressed");
     void OnQuitGame()
     {

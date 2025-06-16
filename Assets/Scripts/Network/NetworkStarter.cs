@@ -6,7 +6,7 @@ public class NetworkStarter : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (GameInstanceManager.PlayerGameInstanceTagContainer.HasTagByName("Game/PlaySolo"))
+        if (GameInstanceManager.PlayerGameInstanceTagContainer.HasTagByName("GameplayTag/JadeFPS/Game/PlaySolo"))
         {
             //if the play solo tag is present, we don't need to start the network manager
             Destroy(gameObject);
