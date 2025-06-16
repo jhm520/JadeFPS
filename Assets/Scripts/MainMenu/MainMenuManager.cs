@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
-public class SimpleMainMenu : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
     void Start()
     {
-        CreateCanvasAndMenu();
-    }
-
-    void CreateCanvasAndMenu()
-    {
-        Debug.Log("Canvas check");
+        //create a game instance manager if it doesn't exist
+        if (GameInstanceManager.Instance == null)
+        {
+            GameObject gameInstanceGO = new GameObject("GameInstanceManager");
+            gameInstanceGO.AddComponent<GameInstanceManager>();
+        }
+        
         // Create Canvas
         GameObject canvasGO = new GameObject("MainMenuCanvas");
         Canvas canvas = canvasGO.AddComponent<Canvas>();
@@ -23,80 +24,79 @@ public class SimpleMainMenu : MonoBehaviour
         // Ensure EventSystem exists
         if (FindFirstObjectByType<EventSystem>() == null)
         {
-            GameObject eventSystem = new GameObject("EventSystem");
-            eventSystem.AddComponent<EventSystem>();
-            eventSystem.AddComponent<StandaloneInputModule>();
+            GameObject eventSystemGO = new GameObject("EventSystem");
+            eventSystemGO.AddComponent<EventSystem>();
+            eventSystemGO.AddComponent<StandaloneInputModule>();
         }
 
-        // Create an empty GameObject to hold buttons
-        GameObject panel = new GameObject("Panel");
-        panel.transform.SetParent(canvasGO.transform);
+        // Create centered rectangle panel
+        GameObject panelGO = new GameObject("MainMenuPanel");
+        panelGO.transform.SetParent(canvasGO.transform, false);
+        Image panelImage = panelGO.AddComponent<Image>();
+        panelImage.color = new Color(0.1f, 0.2f, 0.3f, 0.9f); // Dark translucent background
 
-        RectTransform panelRT = panel.AddComponent<RectTransform>();
-        panelRT.sizeDelta = new Vector2(400, 400);
+        RectTransform panelRT = panelGO.GetComponent<RectTransform>();
+        panelRT.sizeDelta = new Vector2(300, 350);
         panelRT.anchorMin = new Vector2(0.5f, 0.5f);
         panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRT.pivot = new Vector2(0.5f, 0.5f);
-        panelRT.anchoredPosition = Vector2.zero;
+            panelRT.pivot = new Vector2(0.5f, 0.5f);
+            panelRT.anchoredPosition = Vector2.zero;
+            
+            // ✅ Create a button in top quarter of panel
+            GameObject ButtonGO = new GameObject("TopGreenButton");
+            ButtonGO.transform.SetParent(panelGO.transform, false);
 
-        // Add layout group
-        VerticalLayoutGroup layout = panel.AddComponent<VerticalLayoutGroup>();
-        layout.childAlignment = TextAnchor.MiddleCenter;
-        layout.spacing = 15f;
-        layout.childForceExpandWidth = false;
-        layout.childForceExpandHeight = false;
+            
+            // Add required components
+        Image greenImage = ButtonGO.AddComponent<Image>();
+        //set the color of the image
+        greenImage.color = new Color(0.7f, 0.7f, 0.7f, 0.9f);
 
-        ContentSizeFitter fitter = panel.AddComponent<ContentSizeFitter>();
-        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        
+        //set the button's image to the image
+        Button greenButton = ButtonGO.AddComponent<Button>();
+        greenButton.targetGraphic = greenImage;
 
-        // Create buttons
-        CreateButton(panel.transform, "Play Single Player", OnPlaySinglePlayer);
-        CreateButton(panel.transform, "Host Server", OnHostServer);
-        CreateButton(panel.transform, "Join Server", OnJoinServer);
-        CreateButton(panel.transform, "Quit Game", OnQuitGame);
+        // Size and position (top quarter of the panel)
+        RectTransform greenRT = ButtonGO.GetComponent<RectTransform>();
+        greenRT.anchorMin = new Vector2(0.1f, 0.75f);
+        greenRT.anchorMax = new Vector2(0.9f, 0.9f);
+        greenRT.offsetMin = Vector2.zero;
+        greenRT.offsetMax = Vector2.zero;
+
+        // ✅ Add centered text inside the button
+        GameObject textGO = new GameObject("ButtonText");
+        textGO.transform.SetParent(ButtonGO.transform, false);
+
+        Text buttonText = textGO.AddComponent<Text>();
+        buttonText.text = "Play Solo";
+        buttonText.alignment = TextAnchor.MiddleCenter;
+        buttonText.color = Color.black;
+        buttonText.fontSize = 24;
+        Font NewFont = Resources.Load<Font>("Fonts/OpenSans-Medium");
+        buttonText.font = NewFont;
+
+        RectTransform textRT = buttonText.GetComponent<RectTransform>();
+        textRT.anchorMin = Vector2.zero;
+        textRT.anchorMax = Vector2.one;
+        textRT.offsetMin = Vector2.zero;
+        textRT.offsetMax = Vector2.zero;
+        
+        // ✅ Add a click listener
+        greenButton.onClick.AddListener(OnPlaySolo);
     }
-
-    void CreateButton(Transform parent, string text, UnityEngine.Events.UnityAction action)
+    
+    // Button Callbacks
+    void OnPlaySolo()
     {
-        GameObject buttonGO = new GameObject(text + " Button");
-        buttonGO.transform.SetParent(parent, false);
-
-        // Add Image and Button
-        Image image = buttonGO.AddComponent<Image>();
-        image.color = new Color(0.2f, 0.5f, 0.9f);
-        Button button = buttonGO.AddComponent<Button>();
-        button.targetGraphic = image;
-        button.onClick.AddListener(action);
-
-        // RectTransform
-        RectTransform rect = buttonGO.GetComponent<RectTransform>();
-        rect.sizeDelta = new Vector2(280, 60);
-
-        // Add Text
-        GameObject textGO = new GameObject("Text");
-        textGO.transform.SetParent(buttonGO.transform, false);
-        Text label = textGO.AddComponent<Text>();
-        label.text = text;
-        label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        label.fontSize = 24;
-        label.color = Color.white;
-        label.alignment = TextAnchor.MiddleCenter;
-
-        RectTransform textRect = label.GetComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-    }
-
-    // Button Actions
-    void OnPlaySinglePlayer() => SceneManager.LoadScene("GameScene");
-    void OnHostServer() => Debug.Log("Host Server Clicked");
-    void OnJoinServer() => Debug.Log("Join Server Clicked");
+        GameInstanceManager.PlayerGameInstanceTagContainer.AddTagByName("Game/PlaySolo");
+        SceneManager.LoadScene("PlayScene");
+    }// Replace with your real scene
+    void OnHostServer() => Debug.Log("Host Server pressed");
+    void OnJoinServer() => Debug.Log("Join Server pressed");
     void OnQuitGame()
     {
-        Debug.Log("Quit Game Clicked");
+        Debug.Log("Quit Game pressed");
         Application.Quit();
     }
 }
