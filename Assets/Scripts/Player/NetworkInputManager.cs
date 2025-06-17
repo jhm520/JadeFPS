@@ -1,7 +1,7 @@
 using System;
+using FishNet.Object;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Netcode;
 
 public class NetworkInputManager : NetworkBehaviour
 {
@@ -23,10 +23,10 @@ public class NetworkInputManager : NetworkBehaviour
     }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public override void OnNetworkSpawn()
-    {
-        InitializeInput();
-    }
+    // public override void OnNetworkSpawn()
+    // {
+    //     InitializeInput();
+    // }
 
     void InitializeInput()
     {

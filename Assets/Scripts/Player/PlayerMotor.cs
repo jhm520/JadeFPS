@@ -1,5 +1,5 @@
+using FishNet.Object;
 using UnityEngine;
-using Unity.Netcode;
 
 [RequireComponent(typeof(CharacterController))]
 

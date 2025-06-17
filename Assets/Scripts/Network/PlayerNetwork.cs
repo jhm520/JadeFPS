@@ -1,4 +1,5 @@
-using Unity.Netcode;
+using FishNet.Object;
+//using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerNetwork : NetworkBehaviour

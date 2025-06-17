@@ -1,4 +1,4 @@
-using Unity.Netcode;
+using FishNet.Object;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        if (!IsOwner && playerCamera != null)
+        if (!base.Owner.IsLocalClient && playerCamera != null)
         {
             playerCamera.gameObject.SetActive(false);
         }
