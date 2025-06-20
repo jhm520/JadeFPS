@@ -1,3 +1,4 @@
 TODO: Hosting and Client connection is working, but when the client connects, the host loses their own camera view
 TODO: Figure out how to navigate both networked and single player input modes. In single player, when the player spawns, the camera is not being activated despite the MainCamera tag being set
 TODO: Continue on FishNetDev branch, re-implement player connection, movement, and camera rotation for a listen server networking model, but using the Fish net package
+TODO: Make a new unity build with the default scene as PlayScene_FishNet. Test that server/client setup with 2 clients by building the project, and running 2 instances of the unity application
