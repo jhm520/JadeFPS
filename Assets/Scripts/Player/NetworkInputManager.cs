@@ -20,6 +20,8 @@ public class NetworkInputManager : NetworkBehaviour
             enabled = false;
             return;
         }
+        
+        //InitializeInput();
     }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -28,10 +30,18 @@ public class NetworkInputManager : NetworkBehaviour
     //     InitializeInput();
     // }
 
+    public override void OnStartClient()
+    {
+        if (base.IsOwner)
+        {
+            InitializeInput();
+        }
+    }
+
     void InitializeInput()
     {
         // Disable this script if not the owner
-        if (!IsOwner)
+        if (!base.IsOwner)
         {
             enabled = false;
             return;

@@ -1,7 +1,7 @@
 using FishNet.Object;
 using UnityEngine;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerCameraController : NetworkBehaviour
 {
     public Camera playerCamera;
 
@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
+        //TODO: this is probably causing the camera to disable in single player mode, fix that
         if (!base.Owner.IsLocalClient && playerCamera != null)
         {
             playerCamera.gameObject.SetActive(false);
